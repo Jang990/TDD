@@ -1,17 +1,28 @@
 ## 해야할 일 (매 커밋마다 업데이트)
 * $5 + 10CHF = $10(환율이 2:1인 경우)
 * ~~$5 * 2 = $10~~
-* amount를 private으로 만들기
+* **amount를 private으로 만들기**
 * ~~Dollar 사이드 이펙트?~~ 
 * Money 반올림?
-* ~~**equals()**~~
+* ~~equals()~~
 * hashcode()
-* **Equal null**
-* **Equal object**
+* Equal null
+* Equal object
 
 #### 세부사항
-Equal null, Equal object는 일반적으로 발생할 수 있는 상황이지만 지금 당장은 필요하지 않다. <br>
-따라서 할일 목록에만 적어둔다.
+`Dollar.times()`연산은 |호출을 받은 객체의 값 * 호출 파라미터|를 값으로 갖는 Dollar 반환
+
+```java
+    @Test
+    void testMultiplication() {
+        Dollar five = new Dollar(5);
+        Dollar product = five.times(2);
+        assertEquals(10, product.amount);
+        product = five.times(3);
+        assertEquals(15, product.amount);
+    }
+```
+하지만 현재 테스트는 정확히 그것을 말하고 있지 않다.
 
 <br>
 
