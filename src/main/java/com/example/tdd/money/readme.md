@@ -10,17 +10,15 @@
 * Equal object
 * ~~5CHF * 2 = 10CHF~~
 * Dollar/Franc 중복
-* ~~**공용 equals**~~
+* ~~공용 equals~~
 * 공용 times
 * **Franc과 Dollar 비교하기**
 
 #### 세부사항
-`Money`를 만들고 `Dollar`와 `Franc`가 상속받게 만들고 하위의 `amount`와 `equals`를 상위로 올렸다.
-이렇게 Dollar 코드 복사는 해결했다.
-
-이번에는 Franc 동치성 테스트 코드를 복사했다. 이후에 청소해야 한다는 것을 인지하고 넘어간다.
-
-잘한 것 같은데 Franc과 Dollar를 비교하면 어떻게 될까? 다음 장에서 다뤄보자.
+이 코드는 통과할까? 통과하지 않는다면 어떻게 하는게 좋을까?
+```java
+assertFalse(new Franc(5).equals(new Dollar(5)));
+```
 
 <br>
 
