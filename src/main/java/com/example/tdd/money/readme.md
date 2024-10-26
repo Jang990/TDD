@@ -12,13 +12,16 @@
 * Dollar/Franc 중복
 * ~~공용 equals~~
 * 공용 times
-* **Franc과 Dollar 비교하기**
+* ~~**Franc과 Dollar 비교하기**~~
+* **통화?**
 
 #### 세부사항
-이 코드는 통과할까? 통과하지 않는다면 어떻게 하는게 좋을까?
-```java
-assertFalse(new Franc(5).equals(new Dollar(5)));
-```
+getClass를 사용하는 것은 지저분해보인다. <br>
+자바 용어보다는 우리가 사용하는 재정 분야의 용어를 사용하고 싶다. <br>
+하지만 현재 통화(currency) 개념 같은 게 없고, 통화 개념을 도입할 충분한 이유가 없다. <br>
+잠시 동안은 이대로 두자.
+
+더 큰 동기 없이 더 큰 설계를 도입하지 않기로 한다.
 
 <br>
 
