@@ -4,17 +4,14 @@
 * amount를 private으로 만들기
 * ~~Dollar 사이드 이펙트?~~ 
 * Money 반올림?
-* **equals()**
-* **hashcode()**
+* ~~**equals()**~~
+* hashcode()
+* **Equal null**
+* **Equal object**
 
 #### 세부사항
-`Dollar` 객체처럼 객체를 값으로 쓸 수 있음. <br> 
-이것을 값 객체 패턴이라 말함.
-
-값 객체는 `equals()`를 구현해야 함.<br>
-$5는 항상 다른 $5와 같기 때문이다.
-
-만약 Dollar를 해시 테이블의 키로 쓸 생각이라면 `equals()`를 구현할 때 `hashcode()`도 구현해주어야 함. 
+Equal null, Equal object는 일반적으로 발생할 수 있는 상황이지만 지금 당장은 필요하지 않다. <br>
+따라서 할일 목록에만 적어둔다.
 
 <br>
 
