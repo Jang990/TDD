@@ -1,7 +1,7 @@
 ## 해야할 일 (매 커밋마다 업데이트)
 * $5 + 10CHF = $10(환율이 2:1인 경우)
 * ~~$5 * 2 = $10~~
-* **amount를 private으로 만들기**
+* ~~**amount를 private으로 만들기**~~
 * ~~Dollar 사이드 이펙트?~~ 
 * Money 반올림?
 * ~~equals()~~
@@ -10,19 +10,16 @@
 * Equal object
 
 #### 세부사항
-`Dollar.times()`연산은 |호출을 받은 객체의 값 * 호출 파라미터|를 값으로 갖는 Dollar 반환
+테스트에 의도를 정확하게 드러내면서 amount를 private으로 바꿀 수 있었다.
 
-```java
-    @Test
-    void testMultiplication() {
-        Dollar five = new Dollar(5);
-        Dollar product = five.times(2);
-        assertEquals(10, product.amount);
-        product = five.times(3);
-        assertEquals(15, product.amount);
-    }
-```
-하지만 현재 테스트는 정확히 그것을 말하고 있지 않다.
+**주의할 점** <br>
+동치성에 대한 코드가 정확히 작동한다는 것을 검증하는데 실패한다면, <br>
+곱하기 테스트 역시 실패한다는 위험이 있다. <br>
+항상 이런 위험을 인식하고 있어야 한다.
+
+때때로 우리의 추론이 맞지 않아서 결함이 손가락 사이로 빠져나갈 수 있지만 그럴 때면 테스트를 어떻게 작성해야 했는지 다시 생각해보자.
+
+
 
 <br>
 
