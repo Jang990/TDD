@@ -11,37 +11,45 @@
 * ~~5CHF * 2 = 10CHF~~
 * Dollar/Franc 중복
 * ~~공용 equals~~
-* **공용 times**
+* ~~**공용 times**~~
 * ~~Franc과 Dollar 비교하기~~
 * ~~통화?~~
 
 #### 세부사항
-지금 `Dollar`와 `Franc`의 `times()` 메소드를 동일하게 만들기 위한 확실한 방법이 없다. <br>
-팩토리 메소드를 인라인 시키면 어떨까? <br>
-바로 전 장에서 팩토리 메소드를 호출하도록 바꿨는데 실망스러운 일이다. <br>
-하지만 때로는 전진하기 위해 물러서야 할 때도 있는 법이다.
+`Money`의 구현체가 `Franc`인지 `Dollar`인지 정말로 중요한 정보인가? <br>
+`Franc` 코드에서 `times()`가 `Money`를 직접 반환하게 만들어보자.
 
 ```java
-    // Dollar 코드
-    public Money times(int multiplier) {
-        // return Money.dollar(amount * multiplier);
-        return new Dollar(amount * multiplier, currency);
-    }
-
     // Franc 코드
     public Money times(int multiplier) {
         // return Money.franc(amount * multiplier);
-        return new Franc(amount * multiplier, currency);
+        return new Money(amount * multiplier, currency);
     }
 ```
+컴파일러는 `Money`를 콘크리트 클래스로 바꿔야 한다고 말한다.
 
-`Money`의 구현체가 `Franc`인지 `Dollar`인지 정말로 중요한 정보인가? <br>
-우리가 만든 `Money` 시스템의 정보를 기반으로 조심스럽게 생각해봐야 할 문제다.
+빨간 막대인 상황에서는 테스트를 추가로 작성하지 않는다. <br>
+보수적인 방법을 따르자면 변경된 코드를 되돌려서 다시 초록 막대 상태로 돌아간다.<br>
+(때때로 빨간 막대 상태에서도 테스트를 새로 하나 작성하기도 한다.)
 
-하지만 우린 깔끔한 코드와 그 코드가 잘 작동할 거라는 믿음을 줄 수 있는 테스트 코드들이 있다. <br>
-몇 분 동안 고민하는 대신 그냥 수정하고 테스트를 돌려서 컴퓨터에게 직접 물어보자.
+보수적으로 진행해보자. 다시 `Franc.times()`가 `Franc`를 생성해서 반환하게 한다.
 
-컴퓨터라면 10~15초에 대답할 문제를 최고의 소프트웨어 엔지니어들은 5~10분 동안 고민하곤 한다.
+우리는 `Franc(10, 'CHF')`가 `Money(10, 'CHF)`와 서로 같기를 바란다. <br>
+이걸 그대로 테스트로 사용하는 것이다.
+```java
+    @Test
+    void testDifferentClassEquality() {
+        assertEquals(new Money(10, "CHF"),
+                new Franc(10, "CHF")
+        );
+    }
+```
+(책에서는 여기부터 보폭을 넓혀 너무 상세한 설명은 생략되지만, 맥락으로 충분히 이해할 수 있을 것이다.) <br>
+예상대로 해당 테스트는 실패한다. 
+
+`equals()`에서 클래스가 아니라 `currency`를 비교해야 하는 것이다.
+
+이제 `times()`를 `Money` 클래스로 끌어 올릴 수 있다.
 
 <br>
 
