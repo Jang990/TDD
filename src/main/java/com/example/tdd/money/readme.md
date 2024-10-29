@@ -11,35 +11,37 @@
 * ~~5CHF * 2 = 10CHF~~
 * Dollar/Franc 중복
 * ~~공용 equals~~
-* 공용 times
+* **공용 times**
 * ~~Franc과 Dollar 비교하기~~
-* ~~**통화?**~~
+* ~~통화?~~
 
 #### 세부사항
-먼저 `Money`에 `abstract String currency()` 추상 메소드를 추가했다.
+지금 `Dollar`와 `Franc`의 `times()` 메소드를 동일하게 만들기 위한 확실한 방법이 없다. <br>
+팩토리 메소드를 인라인 시키면 어떨까? <br>
+바로 전 장에서 팩토리 메소드를 호출하도록 바꿨는데 실망스러운 일이다. <br>
+하지만 때로는 전진하기 위해 물러서야 할 때도 있는 법이다.
 
-우리는 두 클래스를 모두 포함할 수 있는 동일한 구현을 만들어서 상위 클래스인 `Money`에서 처리하길 원한다. <br>
-두 클래스의 생성자에 `currency` 문자열을 받고 `Money`의 팩토리 메소드에서 처리하면 될 것 같다.
-
-<br>
-
-이 과정에서 하위 클래스들의 `times()`의 코드가 이상해졌다. 
 ```java
+    // Dollar 코드
     public Money times(int multiplier) {
-        return new Dollar(amount * multiplier, null);
+        // return Money.dollar(amount * multiplier);
+        return new Dollar(amount * multiplier, currency);
+    }
+
+    // Franc 코드
+    public Money times(int multiplier) {
+        // return Money.franc(amount * multiplier);
+        return new Franc(amount * multiplier, currency);
     }
 ```
-`Money`팩토리 메소드를 호출하면 해결될 일이다. <br>
-하지만 지금은 통화 개념을 도입하고 있는데 지금 `times()`를 고치는게 맞을까. 아니면 현재 작업이 끝나길 기다려야 할까?
 
-잠시 중단하고 수정할 수 있다면 흔쾌히 고친다. 잠시 중단할 수 없다면 하지 않는다.<br>
-단, 하던 일을 중단하고 다른 일을 하는 상태에서 그 일을 또 중단하고 다른 일을 하지 않는다.
+`Money`의 구현체가 `Franc`인지 `Dollar`인지 정말로 중요한 정보인가? <br>
+우리가 만든 `Money` 시스템의 정보를 기반으로 조심스럽게 생각해봐야 할 문제다.
 
-지금과 같은 상황은 TDD를 하는 동안 계속 나타나는 상황이다. <br>
-스스로 보폭을 조율하라. <br>
-종종걸음으로 진행하는 것이 답답한가? 보폭을 조금 넓혀라. <br>
-성큼성큼 걷는 것이 불안한다? 보폭을 줄여라. <br>
-정해진 올바른 보폭이라는 것은 존재하지 않는다.
+하지만 우린 깔끔한 코드와 그 코드가 잘 작동할 거라는 믿음을 줄 수 있는 테스트 코드들이 있다. <br>
+몇 분 동안 고민하는 대신 그냥 수정하고 테스트를 돌려서 컴퓨터에게 직접 물어보자.
+
+컴퓨터라면 10~15초에 대답할 문제를 최고의 소프트웨어 엔지니어들은 5~10분 동안 고민하곤 한다.
 
 <br>
 
