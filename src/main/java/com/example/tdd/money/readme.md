@@ -9,47 +9,35 @@
 * Equal null
 * Equal object
 * ~~5CHF * 2 = 10CHF~~
-* Dollar/Franc 중복
+* ~~**Dollar/Franc 중복**~~
 * ~~공용 equals~~
-* ~~**공용 times**~~
+* ~~공용 times~~
 * ~~Franc과 Dollar 비교하기~~
 * ~~통화?~~
 
 #### 세부사항
-`Money`의 구현체가 `Franc`인지 `Dollar`인지 정말로 중요한 정보인가? <br>
-`Franc` 코드에서 `times()`가 `Money`를 직접 반환하게 만들어보자.
+이제 생성자 밖에 없는 `Dollar`와 `Franc`를 클래스를 제거할 수 있다. <br>
+Dollar는 바로 지울 수 있는데 Franc는 앞 장에서 만든 `testDifferentClassEquality` 때문에 지울 수 없다.
 
-```java
-    // Franc 코드
-    public Money times(int multiplier) {
-        // return Money.franc(amount * multiplier);
-        return new Money(amount * multiplier, currency);
-    }
-```
-컴파일러는 `Money`를 콘크리트 클래스로 바꿔야 한다고 말한다.
+다시 생각해보자. <br>
+이 테스트를 지워도 될 정도로 다른 곳에서 동치성 테스트를 충분히 하고 있나?
 
-빨간 막대인 상황에서는 테스트를 추가로 작성하지 않는다. <br>
-보수적인 방법을 따르자면 변경된 코드를 되돌려서 다시 초록 막대 상태로 돌아간다.<br>
-(때때로 빨간 막대 상태에서도 테스트를 새로 하나 작성하기도 한다.)
-
-보수적으로 진행해보자. 다시 `Franc.times()`가 `Franc`를 생성해서 반환하게 한다.
-
-우리는 `Franc(10, 'CHF')`가 `Money(10, 'CHF)`와 서로 같기를 바란다. <br>
-이걸 그대로 테스트로 사용하는 것이다.
+충분하다. 아니 사실 좀 과하다. 3,4번째 assertion은 중복되니 지우는게 좋다.
 ```java
     @Test
-    void testDifferentClassEquality() {
-        assertEquals(new Money(10, "CHF"),
-                new Franc(10, "CHF")
-        );
+    void testEquality() {
+        assertTrue(Money.dollar(5).equals(Money.dollar(5)));
+        assertFalse(Money.dollar(5).equals(Money.dollar(6)));
+        assertTrue(Money.franc(5).equals(Money.franc(5)));
+        assertFalse(Money.franc(5).equals(Money.franc(6)));
+        assertFalse(Money.franc(5).equals(Money.dollar(5)));
     }
 ```
-(책에서는 여기부터 보폭을 넓혀 너무 상세한 설명은 생략되지만, 맥락으로 충분히 이해할 수 있을 것이다.) <br>
-예상대로 해당 테스트는 실패한다. 
 
-`equals()`에서 클래스가 아니라 `currency`를 비교해야 하는 것이다.
+내 실수가 있었고 이 커밋에서 수정한다.
+1. 8장에서 팩토리 메소드의 반환형을 구체 클래스가 아닌 `Money`로 바꾸지 않았다.
+2. 10장에서 팩토리 메소드 리턴문을 `new Money`로 바꾸지 않았다. 
 
-이제 `times()`를 `Money` 클래스로 끌어 올릴 수 있다.
 
 <br>
 
