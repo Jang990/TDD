@@ -16,13 +16,40 @@
 * 통화?
 
 #### 세부사항
-`Dollar`와 `Franc`의 `times`메소드는 비슷해보인다. <br>
-하지만 바로 times를 상위로 올려버리는 것은 너무 빠르다. <br>
-TDD를 효과적으로 이용하며 바꿔보자. (TDD가 익숙하다면 빠르게 바꿔도 괜찮다.)
+하위 클래스에 대한 직접적인 참조가 적어진다면? 하위 클래스를 제거하기 수월하다. <br>
+테스트에서 하위 클래스의 참조가 사라지게 만들어보자.
 
-`times`의 반환 타입을 `Money`로 바꿔보니 더 비슷하다. <br>
-두 하위 클래스의 일은 모두 `Money`가 할 수 있을 것 같다.(추론) <br>
-두 하위 클래스를 아예 제거해버리고 싶다
+Money에서 `Dollar`를 반환하는 팩토리 메소드를 만들어보자. <br>
+이제 테스트 코드에서 `Dollar` 참조를 모두 제거하고 테스트 코드를 돌려보자. <br>
+컴파일 에러가 발생한다. 생각해보니 `times()`는 Money에 선언돼있지 않다.<br>
+
+`Money`를 추상클래스로 만들고 `times`를 추상 메소드로 만들었다.<br>
+이제 테스트 코드가 동작하고, `new Dollar`나 `Dollar dollar`등의 참조를 테스트 코드에서 찾을 수 없다.
+
+`Franc`도 이와 같이 테스트 코드에서 참조를 전부 제거해준다.<br>
+이제 테스트 코드를 잘 살펴보면 두 테스트는 똑같은 `Money.times()`를 테스트하고 있다. <br>
+```java
+    @Test
+    void testMultiplication() {
+        Money five = Money.dollar(5);
+        assertEquals(Money.dollar(10), five.times(2));
+        assertEquals(Money.dollar(15), five.times(3));
+    }
+
+    @Test
+    void testFrancMultiplication() {
+        Money five = Money.franc(5);
+        assertEquals(Money.franc(10), five.times(2));
+        assertEquals(Money.franc(15), five.times(3));
+    }
+```
+
+`testFrancMultiplication`를 제거하면 전체 코드에 대한 확신이 조금이라도 줄어드나? <br>
+그럴 가능성이 조금이나마 있기 때문에 일단 남겨두자.
+
+Dollar/Franc 중복을 완전히 없앨 순 없었지만, <br>
+어쨋든 우린 하위 클래스의 존재를 테스트에서 분리했기 때문에 다른 코드에 영향을 주지 않고 상속 구조를 마음대로 바꿀 수 있어졌다. <br>
+다음 장들에서 천천히 지워나가 보자.
 
 <br>
 
