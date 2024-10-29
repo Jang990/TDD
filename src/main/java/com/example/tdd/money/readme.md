@@ -9,47 +9,20 @@
 * Equal null
 * Equal object
 * ~~5CHF * 2 = 10CHF~~
-* **Dollar/Franc 중복**
+* Dollar/Franc 중복
 * ~~공용 equals~~
 * 공용 times
 * ~~Franc과 Dollar 비교하기~~
-* 통화?
+* **통화?**
 
 #### 세부사항
-하위 클래스에 대한 직접적인 참조가 적어진다면? 하위 클래스를 제거하기 수월하다. <br>
-테스트에서 하위 클래스의 참조가 사라지게 만들어보자.
+할일 목록에서 어떤걸 하면 귀찮고 불필요한 하위 클래스를 제거하는데 도움이 될까?
 
-Money에서 `Dollar`를 반환하는 팩토리 메소드를 만들어보자. <br>
-이제 테스트 코드에서 `Dollar` 참조를 모두 제거하고 테스트 코드를 돌려보자. <br>
-컴파일 에러가 발생한다. 생각해보니 `times()`는 Money에 선언돼있지 않다.<br>
+통화 개념을 도입해보면 어떨까?
 
-`Money`를 추상클래스로 만들고 `times`를 추상 메소드로 만들었다.<br>
-이제 테스트 코드가 동작하고, `new Dollar`나 `Dollar dollar`등의 참조를 테스트 코드에서 찾을 수 없다.
-
-`Franc`도 이와 같이 테스트 코드에서 참조를 전부 제거해준다.<br>
-이제 테스트 코드를 잘 살펴보면 두 테스트는 똑같은 `Money.times()`를 테스트하고 있다. <br>
-```java
-    @Test
-    void testMultiplication() {
-        Money five = Money.dollar(5);
-        assertEquals(Money.dollar(10), five.times(2));
-        assertEquals(Money.dollar(15), five.times(3));
-    }
-
-    @Test
-    void testFrancMultiplication() {
-        Money five = Money.franc(5);
-        assertEquals(Money.franc(10), five.times(2));
-        assertEquals(Money.franc(15), five.times(3));
-    }
-```
-
-`testFrancMultiplication`를 제거하면 전체 코드에 대한 확신이 조금이라도 줄어드나? <br>
-그럴 가능성이 조금이나마 있기 때문에 일단 남겨두자.
-
-Dollar/Franc 중복을 완전히 없앨 순 없었지만, <br>
-어쨋든 우린 하위 클래스의 존재를 테스트에서 분리했기 때문에 다른 코드에 영향을 주지 않고 상속 구조를 마음대로 바꿀 수 있어졌다. <br>
-다음 장들에서 천천히 지워나가 보자.
+~~어떻게 구현하길 원하나?~~ 아니, 통화 개념을 어떻게 테스트하길 원하나? <br>
+통화를 도입하기 위해 객체들을 도입하고 경량 팩토리를 사용할까? <br>
+쉽게 가보자. 문자열을 써보자.
 
 <br>
 
