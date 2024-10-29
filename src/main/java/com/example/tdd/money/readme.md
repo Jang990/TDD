@@ -1,43 +1,16 @@
 ## 해야할 일 (매 커밋마다 업데이트)
 * $5 + 10CHF = $10(환율이 2:1인 경우)
-* ~~$5 * 2 = $10~~
-* ~~amount를 private으로 만들기~~
-* ~~Dollar 사이드 이펙트?~~ 
-* Money 반올림?
-* ~~equals()~~
-* hashcode()
-* Equal null
-* Equal object
-* ~~5CHF * 2 = 10CHF~~
-* ~~**Dollar/Franc 중복**~~
-* ~~공용 equals~~
-* ~~공용 times~~
-* ~~Franc과 Dollar 비교하기~~
-* ~~통화?~~
+* **$5 * $5 = $10**
 
 #### 세부사항
-이제 생성자 밖에 없는 `Dollar`와 `Franc`를 클래스를 제거할 수 있다. <br>
-Dollar는 바로 지울 수 있는데 Franc는 앞 장에서 만든 `testDifferentClassEquality` 때문에 지울 수 없다.
+조금 지저분해서 아직 해결되지 않은 항목들은 새 목록으로 옮긴다. <br>
+저자는 이때 자그마한 항목이 많으면 그걸 옮기기보다 그냥 처리해버린다. (자신의 성향에 맞게)
 
-다시 생각해보자. <br>
-이 테스트를 지워도 될 정도로 다른 곳에서 동치성 테스트를 충분히 하고 있나?
+전체적으로 더하기 기능을 어떻게 처리할지 잘 모르겠다. <br>
+좀 더 간단한 예, '$5 * $5 = $10'에서 먼저 시작해본다.
 
-충분하다. 아니 사실 좀 과하다. 3,4번째 assertion은 중복되니 지우는게 좋다.
-```java
-    @Test
-    void testEquality() {
-        assertTrue(Money.dollar(5).equals(Money.dollar(5)));
-        assertFalse(Money.dollar(5).equals(Money.dollar(6)));
-        assertTrue(Money.franc(5).equals(Money.franc(5)));
-        assertFalse(Money.franc(5).equals(Money.franc(6)));
-        assertFalse(Money.franc(5).equals(Money.dollar(5)));
-    }
-```
-
-내 실수가 있었고 이 커밋에서 수정한다.
-1. 8장에서 팩토리 메소드의 반환형을 구체 클래스가 아닌 `Money`로 바꾸지 않았다.
-2. 10장에서 팩토리 메소드 리턴문을 `new Money`로 바꾸지 않았다. 
-
+이 장부터 본격적으로 속도를 내본다. <br>
+물론 어떻게 설계할지 모르겠으면 다시 가짜 구현을 하고 리팩토링하는 식으로 접근한다.
 
 <br>
 
