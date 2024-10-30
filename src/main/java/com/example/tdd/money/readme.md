@@ -4,18 +4,25 @@
 * **$5 + $5에서 Money 반환하기**
 
 #### 세부사항
-모든 중복이 제거되기 전까지 `$5 * $5 = $10`에 완료 표시를 할 수 없다.
-```java
-public class Bank {
-    public Money reduce(Expression source, String to) {
-        return Money.dollar(10);
-    }
-}
-```
-`reduce()` 가짜 구현에 있는 `$10`은 테스트 코드에 있는 `$5 + $5`와 같다.
+Money.plus()는 그냥 Money가 아닌 Expression(Sum 구현체)을 반환해야 한다. <br>
+같은 통화(달러)를 갖는 경우엔 그냥 `Money(달러)`로 반환해도 좋겠다는 생각이 든다. 하지만 이건 나중 일이다.
 
-이전 장에서 가짜 구현을 만들고 진짜 구현을 만드는 식으로 작업할 때는 그냥 변수로 치환하는 단순한 작업 이였다. <br>
-이 작업은 그렇게 간단해 보이진 않는다. 순방향으로 작업해보자.
+테스트 코드를 작성해보자. 두 `Moeny`의 합은 `Sum`이어야 한다.
+```java
+    @Test
+    void testPlusReturnsSum() {
+        Money five = Money.dollar(5);
+        Expression result = five.plus(five);
+        Sum sum = (Sum) result;
+        assertEquals(five, sum.augend);
+        assertEquals(five, sum.addend);
+    }
+```
+하지만 이 테스트는 그리 오래가지 못한다. <br> 
+이 테스트는 수행하고자 하는 연산의 외부 행위가 아닌 내부 구현에 너무 깊게 관여하고 있다. <br>
+그래도 이 테스트를 통과 시키면 목표에 가까워진다는 것은 틀림없다. <br>
+테스트를 통과시켜보자.
+
 
 <br>
 
