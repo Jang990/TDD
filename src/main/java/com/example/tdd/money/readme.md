@@ -1,66 +1,31 @@
 ## 해야할 일 (매 커밋마다 업데이트)
-* $5 + 10CHF = $10(환율이 2:1인 경우)
-* ~~**$5 * $5 = $10**~~
+* **$5 + 10CHF = $10(환율이 2:1인 경우)**
+* ~~$5 * $5 = $10~~
 * $5 + $5에서 Money 반환하기
 * ~~Bank.reduce(Money)~~
-* ~~**Money에 대한 통화 변환을 수행하는 Reduce**~~
-* ~~**Reduce(Bank, String)**~~
+* ~~Money에 대한 통화 변환을 수행하는 Reduce~~
+* ~~Reduce(Bank, String)~~
 
 #### 세부사항
-환율에 대한 일은 모두 `Bank`가 처리해야 한다. <br>
-`Expression.reduce`의 인자로 `Bank`를 자연스럽게 처리될 것 같다.
-
-`Expression.reduce`에 `Bank` 인자를 추가해주고 구현체들에도 추가해주자. <br>
-그리고 올바른 환율을 `Bank`에게 물어보자
+드디어 이 모든 작업의 시초인 $5 + 10CHF에 대한 테스트를 추가할 준비가 됐다. <br>
+이게 우리가 원하는 코드다.
 ```java
-public class Bank {
-    public Money reduce(Expression source, String to) {
-        return source.reduce(this, to);
-    }
-
-    public int rate(String from, String to) {
-        return (from.equals("CHF") && to.equals("USD"))
-                ? 2
-                : 1;
-    }
-}
-```
-테스트 코드에서도 2(`bank.addRate("CHF", "USD", 2);`)가 나오고 <br> 
-지금 이 코드에서도 2가 중복되서 나온다.
-
-`Bank`에서 환율표를 가지고 있다가 필요할 때 찾아볼 수 있게 해야 한다. <br>
-두 개의 통화(프랑 -> 달러)와 환율을 매핑시키는 해시 테이블을 사용할 수 있겠다.
-
-해시 테이블 키를 위한 `Pair` 객체를 만들어보자. <br>
-키로 쓸 것이기 때문에 `equals()`와 `hashcode()`를 구현해야 한다. <br>
-빠른 구현을 위해 `hashcode()`가 0만 반환하게 만든다. <br> 
-이러면 리스트 검색처럼 선형 검색을 하게 되지만 지금은 문제 없다. 나중에 많은 통화를 다룰 때 개선하면 된다.
-
-테스트를 돌려보면 빨간 막대를 확인할 수 있다.
-```java
-    // 빨간 테스트
     @Test
-    void testReduceMoney() {
+    void testMixedAddition() {
+        Expression fiveBucks = Money.dollar(5);
+        Expression tenFrancs = Money.franc(10);
         Bank bank = new Bank();
-        Money result = bank.reduce(Money.dollar(1), "USD");
-        assertEquals(Money.dollar(1), result);
-    }
-```
-동일 통화간(달러 -> 달러) 환율은 1이다. <br> 
-하지만 해시테이블에 정보가 없기 때문에 NPE가 발생한다.
-
-예상치 못한 뜻밖의 에러이기 때문에, 우리가 발견한 내용을 <br>
-나중에 읽을 다른 사람들에게도 알려주기 위해 테스트를 만들어 두자.
-```java
-    @Test
-    void testIdentityRate() {
-        assertEquals(1, new Bank().rate("USD", "USD"));
+        bank.addRate("CHF", "USD", 2);
+        Money result = bank.reduce(fiveBucks.plus(tenFrancs), "USD");
+        assertEquals(Money.dollar(10), result);
     }
 ```
 
-이제 에러가 두 곳에서 발생하지만, 한 곳만 바꿔 주면 두 개가 모두 없어질 것이다. <br>
-`if(from.equals(to)) return 1;` - rate에 이 코드만 추가해주면 된다.
+컴파일 에러가 무지 많다. <br>
+`Money`에서 `Expression`으로 일반화할 때 우리가 어설프게 남겨둔 것들이 꽤 된다. <br>
+독자를 어지럽히고 싶지 않지만 이젠느 독자를 어지럽힐 때가 됐다.
 
+처음 코드 수정이 다음으로 계속해서 퍼져나갈 수 있게 할 것이다.
 
 <br>
 
