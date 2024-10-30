@@ -72,4 +72,9 @@ class MoneyTest {
         assertEquals(Money.dollar(1), result);
     }
 
+    @Test
+    void testIdentityRate() {
+        assertEquals(1, new Bank().rate("USD", "USD"));
+    }
+
 }
