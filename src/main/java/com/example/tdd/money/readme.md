@@ -2,27 +2,78 @@
 * $5 + 10CHF = $10(환율이 2:1인 경우)
 * $5 * $5 = $10
 * **$5 + $5에서 Money 반환하기**
+* ~~**Bank.reduce(Money)**~~
+* **Money에 대한 통화 변환을 수행하는 Reduce**
+* **Reduce(Bank, String)**
 
 #### 세부사항
-Money.plus()는 그냥 Money가 아닌 Expression(Sum 구현체)을 반환해야 한다. <br>
-같은 통화(달러)를 갖는 경우엔 그냥 `Money(달러)`로 반환해도 좋겠다는 생각이 든다. 하지만 이건 나중 일이다.
-
-테스트 코드를 작성해보자. 두 `Moeny`의 합은 `Sum`이어야 한다.
+이제 `Bank.reduce()`는 `Sum`을 전달받는다. <br>
+이제 `Bank.reduce()`의 가짜 구현을 걷어내보자. <br>
+가짜 구현으로 인해 테스트가 깨지도록 인자를 선택했다.
 ```java
     @Test
-    void testPlusReturnsSum() {
-        Money five = Money.dollar(5);
-        Expression result = five.plus(five);
-        Sum sum = (Sum) result;
-        assertEquals(five, sum.augend);
-        assertEquals(five, sum.addend);
+    void testReduceSum() {
+        Expression sum = new Sum(Money.dollar(3), Money.dollar(4));
+        Bank bank = new Bank();
+        Money result = bank.reduce(sum, "USD");
+        assertEquals(Money.dollar(7), result);
+    }    
+```
+
+우리가 Sum을 계산하면 결과는 Money가 돼야하고, Money의 양은 두 Money의 합이여야 하고, 
+통화는 우리가 Bank.reduce()에 요청한 통화여야 한다.
+```java
+public class Bank {
+    public Money reduce(Expression source, String to) {
+        Sum sum = (Sum) source;
+        int amount = sum.augend.amount + sum.addend.amount;
+        return new Money(amount, to);
+    }
+}
+```
+
+테스트가 통과한다. 하지만 이 코드는 두 가지 이유로 지저분하다.
+
+1. 캐스팅(형변환) 문제 : 이 코드는 모든 Expression에 대해 작동해야 한다. 
+2. 공용 필드 문제 : 공용 필드와 그 필드에 대한 두 단계에 걸친 참조
+
+간단히 고칠 수 있는 문제들이다. <br>
+공용 필드 문제는 로직을 `Sum` 클래스로 옮기면 끝이다.  
+```java
+    // Bank 메소드
+    public Money reduce(Expression source, String to) {
+        Sum sum = (Sum) source;
+        return sum.reduce(to);
+    }
+
+    // Sum 메소드
+    public Money reduce(String to) {
+        int amount = augend.amount + addend.amount;
+        return new Money(amount, to);
     }
 ```
-하지만 이 테스트는 그리 오래가지 못한다. <br> 
-이 테스트는 수행하고자 하는 연산의 외부 행위가 아닌 내부 구현에 너무 깊게 관여하고 있다. <br>
-그래도 이 테스트를 통과 시키면 목표에 가까워진다는 것은 틀림없다. <br>
-테스트를 통과시켜보자.
+이걸 해결하고 보니 문득 Money를 `Bank.reduce()`에 넘기면 어떻게 처리해야 할지 고민이 든다. <br>
+예를 들어 Dollar를 Franc으로 바꾸고 싶을 때... 지금 구현은 이 문제를 해결하지 못한다.
 
+할 일 목록에 `Bank.reduce(Money)`를 추가한다. <br> 
+지금은 초록 막대 상태이고, 현재 위 코드에서 뭘 더해야 할지 명확하지 않으니 <br>
+이것에 대한 테스트 코드를 작성해보자.
+```java
+    @Test
+    void testReduceMoney() {
+        Bank bank = new Bank();
+        Money result = bank.reduce(Money.dollar(1), "USD");
+        assertEquals(Money.dollar(1), result);
+    }
+```
+
+클래스를 명시적으로 검사하는 코드들이 추가돼야 하면 항상 다형성을 사용하도록 바꾸는 것이 좋다. <br>
+Expression에 reduce를 추가해서 다형성을 지원하도록 만들어보자. <br>
+일단 Money는 자신을 반환하는 정도로만 구현하자.
+
+
+이렇게 코드를 변경하면서 `Expression.reduce`에 환율을 계산하는 `Bank`가 매개변수로 필요하다는 것을 확신하게 됐다. <br>
+이것도 할 일 목록에 추가한다.
 
 <br>
 

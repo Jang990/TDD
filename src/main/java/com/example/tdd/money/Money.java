@@ -35,4 +35,9 @@ public class Money implements Expression {
         return amount == money.amount
                 && currency().equals(money.currency());
     }
+
+    @Override
+    public Money reduce(String to) {
+        return this;
+    }
 }
